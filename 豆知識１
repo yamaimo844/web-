@@ -1,0 +1,771 @@
+git remote add origin https://github.com/yamaimo844/web-.git
+ git branch -M main 
+git push -u origin main
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>100個の豆知識</title>
+  <meta name="description" content="科学・歴史・動物・食べ物など、100個の豆知識を楽しめる日本語ウェブサイト。">
+  <style>
+    :root {
+      --bg: #fffaf5;
+      --bg2: #fff0db;
+      --card: rgba(255,255,255,.82);
+      --text: #2f2a26;
+      --muted: #6f655d;
+      --accent: #ff8a3d;
+      --accent2: #ffb86b;
+      --line: #f1d9bf;
+      --shadow: 0 12px 30px rgba(90,54,19,.10);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff7e7 0, transparent 40%),
+        radial-gradient(circle at top right, #ffe8cb 0, transparent 35%),
+        linear-gradient(180deg, var(--bg) 0%, #fffdf9 55%, #fff5ea 100%);
+      line-height: 1.7;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1140px, calc(100% - 32px)); margin: 0 auto; }
+    .hero { padding: 72px 0 30px; }
+    .hero-box {
+      background: linear-gradient(135deg, rgba(255,255,255,.88), rgba(255,244,230,.96));
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-box::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,184,107,.55), rgba(255,184,107,0));
+    }
+    .eyebrow { display:inline-block; padding:8px 12px; border-radius:999px; background:#fff3e0; color:#9a5d1a; font-weight:700; font-size:14px; }
+    h1 { font-size: clamp(32px, 5vw, 56px); line-height: 1.1; margin: 14px 0 10px; }
+    .lead { font-size: clamp(16px, 2vw, 19px); color: var(--muted); max-width: 760px; }
+    .hero-stats { display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:16px; padding:12px 16px; min-width:140px; }
+    .stat strong { display:block; font-size:22px; }
+    .panel { margin: 22px 0 0; background: var(--card); backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,.7); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .panel h2 { margin:0; font-size:22px; }
+    .panel-inner { padding: 22px; }
+    .toc { display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; }
+    .toc a { text-decoration:none; padding:12px 14px; background:#fff; border:1px solid var(--line); border-radius:14px; text-align:center; font-weight:700; color:#6a4820; }
+    .toc a:hover { background:#fff6eb; }
+    .filters { display:flex; flex-wrap:wrap; gap:10px; }
+    .filter-btn { border:none; background:#fff; border:1px solid var(--line); color:#7a5120; padding:10px 14px; border-radius:999px; font-weight:700; cursor:pointer; }
+    .filter-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; border-color: transparent; }
+    .category-section { padding: 18px 0 10px; }
+    .section-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin: 18px 0 16px; }
+    .section-head h2 { margin:0; font-size: 28px; }
+    .section-head a { text-decoration:none; color:#92571a; font-weight:700; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:16px; }
+    .card { background: var(--card); border:1px solid rgba(255,255,255,.7); box-shadow: var(--shadow); border-radius: 20px; padding: 18px; transition: transform .18s ease, box-shadow .18s ease; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(90,54,19,.14); }
+    .meta { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .badge { background:#2f2a26; color:#fff; border-radius:999px; font-size:12px; font-weight:800; padding:6px 10px; letter-spacing:.06em; }
+    .cat { color:#9c6a32; font-size:13px; font-weight:800; }
+    .card h3 { margin:0 0 8px; font-size:19px; line-height:1.4; }
+    .card p { margin:0; color: var(--muted); font-size:15px; }
+    .footer { margin: 44px 0 60px; text-align:center; color:var(--muted); font-size:14px; }
+    .sticky-nav { position: sticky; top: 12px; z-index: 20; }
+    .search { width:100%; border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:15px; background:#fff; }
+    .hint { font-size:13px; color:var(--muted); margin-top:8px; }
+    .hide { display:none !important; }
+    @media (max-width: 720px) {
+      .hero { padding-top: 24px; }
+      .hero-box { padding: 24px; border-radius: 24px; }
+      .panel-inner { padding: 18px; }
+      .section-head { align-items:flex-start; flex-direction:column; }
+    }
+  </style>
+</head>
+<body id="top">
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-box">
+        <span class="eyebrow">読むだけでちょっと賢くなる</span>
+        <h1>100個の豆知識</h1>
+        <p class="lead">科学、宇宙、歴史、動物、食べ物、言葉、文化まで。スキマ時間に楽しく読める豆知識を100個、見やすいカード形式でまとめました。</p>
+        <div class="hero-stats">
+          <div class="stat"><strong>100</strong><span>豆知識</span></div>
+          <div class="stat"><strong>20</strong><span>カテゴリ</span></div>
+          <div class="stat"><strong>日本語</strong><span>やさしく読める</span></div>
+        </div>
+      </div>
+
+      <section class="panel" aria-labelledby="toc-title">
+        <div class="panel-inner">
+          <h2 id="toc-title">目次</h2>
+          <div class="toc"><a href="#sec-1">宇宙</a><a href="#sec-2">科学</a><a href="#sec-3">動物</a><a href="#sec-4">食べ物</a><a href="#sec-5">歴史</a><a href="#sec-6">言語</a><a href="#sec-7">人体</a><a href="#sec-8">地球</a><a href="#sec-9">文化</a><a href="#sec-10">生活</a><a href="#sec-11">テクノロジー</a><a href="#sec-12">植物</a><a href="#sec-13">海</a><a href="#sec-14">音</a><a href="#sec-15">数学</a><a href="#sec-16">天気</a><a href="#sec-17">芸術</a><a href="#sec-18">乗り物</a><a href="#sec-19">スポーツ</a><a href="#sec-20">雑学</a></div>
+        </div>
+      </section>
+
+      <section class="panel sticky-nav" aria-labelledby="filter-title">
+        <div class="panel-inner">
+          <h2 id="filter-title">検索とフィルタ</h2>
+          <input id="searchBox" class="search" type="search" placeholder="キーワードで探す（例：月、タコ、虹、歴史）">
+          <p class="hint">カテゴリボタンとキーワード検索を組み合わせて絞り込めます。</p>
+          <div class="filters" id="filters"><button class="filter-btn active" data-filter="all">すべて</button><button class="filter-btn" data-filter="宇宙">宇宙</button><button class="filter-btn" data-filter="科学">科学</button><button class="filter-btn" data-filter="動物">動物</button><button class="filter-btn" data-filter="食べ物">食べ物</button><button class="filter-btn" data-filter="歴史">歴史</button><button class="filter-btn" data-filter="言語">言語</button><button class="filter-btn" data-filter="人体">人体</button><button class="filter-btn" data-filter="地球">地球</button><button class="filter-btn" data-filter="文化">文化</button><button class="filter-btn" data-filter="生活">生活</button><button class="filter-btn" data-filter="テクノロジー">テクノロジー</button><button class="filter-btn" data-filter="植物">植物</button><button class="filter-btn" data-filter="海">海</button><button class="filter-btn" data-filter="音">音</button><button class="filter-btn" data-filter="数学">数学</button><button class="filter-btn" data-filter="天気">天気</button><button class="filter-btn" data-filter="芸術">芸術</button><button class="filter-btn" data-filter="乗り物">乗り物</button><button class="filter-btn" data-filter="スポーツ">スポーツ</button><button class="filter-btn" data-filter="雑学">雑学</button></div>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="wrap" id="content">
+    
+    <section id="sec-1" class="category-section">
+      <div class="section-head">
+        <h2>宇宙</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="宇宙">
+      <div class="meta"><span class="badge">001</span><span class="cat">宇宙</span></div>
+      <h3>バナナはわずかに放射線を持つ</h3>
+      <p>バナナに含まれるカリウムの一部は放射性同位体なので、わずかな放射線を出します。ただし日常生活で気にする必要がないほど微量です。</p>
+    </article><article class="card" data-category="宇宙">
+      <div class="meta"><span class="badge">002</span><span class="cat">宇宙</span></div>
+      <h3>金星の1日は1年より長い</h3>
+      <p>金星は自転が非常にゆっくりで、公転よりも自転にかかる時間のほうが長いことで知られています。</p>
+    </article><article class="card" data-category="宇宙">
+      <div class="meta"><span class="badge">003</span><span class="cat">宇宙</span></div>
+      <h3>宇宙は完全な無音ではない</h3>
+      <p>空気がないので人の耳には音が伝わりませんが、電磁波や振動を観測データとして“音のように”変換することはできます。</p>
+    </article><article class="card" data-category="宇宙">
+      <div class="meta"><span class="badge">004</span><span class="cat">宇宙</span></div>
+      <h3>月では足あとが長く残りやすい</h3>
+      <p>月には風や雨がほとんどないため、表面についた足あとが長期間そのまま残ると考えられています。</p>
+    </article><article class="card" data-category="宇宙">
+      <div class="meta"><span class="badge">005</span><span class="cat">宇宙</span></div>
+      <h3>土星は水に浮くとよく言われる</h3>
+      <p>平均密度が水より小さいため、理屈のうえでは十分大きな水槽があれば浮く計算になります。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-2" class="category-section">
+      <div class="section-head">
+        <h2>科学</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="科学">
+      <div class="meta"><span class="badge">006</span><span class="cat">科学</span></div>
+      <h3>氷は水に浮く</h3>
+      <p>多くの物質は固体のほうが液体より密ですが、水は凍ると分子の並びが広がるため氷が浮きます。</p>
+    </article><article class="card" data-category="科学">
+      <div class="meta"><span class="badge">007</span><span class="cat">科学</span></div>
+      <h3>雷は稲妻のあとに音が来る</h3>
+      <p>光は音よりずっと速く伝わるため、雷鳴は稲妻を見たあとで聞こえます。</p>
+    </article><article class="card" data-category="科学">
+      <div class="meta"><span class="badge">008</span><span class="cat">科学</span></div>
+      <h3>ガラスは主に砂から作られる</h3>
+      <p>一般的なガラスの主成分は二酸化ケイ素で、砂に多く含まれています。</p>
+    </article><article class="card" data-category="科学">
+      <div class="meta"><span class="badge">009</span><span class="cat">科学</span></div>
+      <h3>金属は熱を伝えやすい</h3>
+      <p>金属の中では電子が動きやすく、熱エネルギーも運ばれやすいためです。</p>
+    </article><article class="card" data-category="科学">
+      <div class="meta"><span class="badge">010</span><span class="cat">科学</span></div>
+      <h3>虹は太陽の反対側に見える</h3>
+      <p>雨粒の中で光が屈折・反射するため、虹は観察者から見て太陽と反対の方向に現れます。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-3" class="category-section">
+      <div class="section-head">
+        <h2>動物</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="動物">
+      <div class="meta"><span class="badge">011</span><span class="cat">動物</span></div>
+      <h3>タコの心臓は3つある</h3>
+      <p>タコには全身に血液を送る心臓1つと、えらに送る心臓2つがあります。</p>
+    </article><article class="card" data-category="動物">
+      <div class="meta"><span class="badge">012</span><span class="cat">動物</span></div>
+      <h3>キリンの首の骨の数は人と同じ7個</h3>
+      <p>首の長さは大きく違っても、哺乳類の多くは首の骨の数が7個です。</p>
+    </article><article class="card" data-category="動物">
+      <div class="meta"><span class="badge">013</span><span class="cat">動物</span></div>
+      <h3>コアラの指紋は人に似ている</h3>
+      <p>細かな模様が非常に似ているため、見分けが難しいと話題になることがあります。</p>
+    </article><article class="card" data-category="動物">
+      <div class="meta"><span class="badge">014</span><span class="cat">動物</span></div>
+      <h3>イルカは眠るとき脳を半分ずつ休ませる</h3>
+      <p>呼吸のため完全に眠り込まず、片方ずつ休ませるような睡眠をとることで知られています。</p>
+    </article><article class="card" data-category="動物">
+      <div class="meta"><span class="badge">015</span><span class="cat">動物</span></div>
+      <h3>ミツバチは踊りで仲間に場所を伝える</h3>
+      <p>花の方向や距離を“8の字ダンス”で知らせる行動が有名です。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-4" class="category-section">
+      <div class="section-head">
+        <h2>食べ物</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="食べ物">
+      <div class="meta"><span class="badge">016</span><span class="cat">食べ物</span></div>
+      <h3>はちみつは保存性が高い</h3>
+      <p>糖分が高く水分が少ないため、適切に保管すれば長く品質を保ちやすい食品です。</p>
+    </article><article class="card" data-category="食べ物">
+      <div class="meta"><span class="badge">017</span><span class="cat">食べ物</span></div>
+      <h3>りんごは水に浮きやすい</h3>
+      <p>果肉の中に空気を多く含むため、見た目以上に浮力があります。</p>
+    </article><article class="card" data-category="食べ物">
+      <div class="meta"><span class="badge">018</span><span class="cat">食べ物</span></div>
+      <h3>わさびの辛さは舌より鼻に来やすい</h3>
+      <p>刺激成分が揮発しやすく、鼻に抜けるような感覚を生みます。</p>
+    </article><article class="card" data-category="食べ物">
+      <div class="meta"><span class="badge">019</span><span class="cat">食べ物</span></div>
+      <h3>ポップコーンは中の水分で弾ける</h3>
+      <p>加熱で内部の水分が蒸気になり、圧力に耐えきれなくなると一気に弾けます。</p>
+    </article><article class="card" data-category="食べ物">
+      <div class="meta"><span class="badge">020</span><span class="cat">食べ物</span></div>
+      <h3>チョコレートは温度で食感が変わる</h3>
+      <p>カカオバターの結晶の状態によって、口どけや表面のつやが変わります。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-5" class="category-section">
+      <div class="section-head">
+        <h2>歴史</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="歴史">
+      <div class="meta"><span class="badge">021</span><span class="cat">歴史</span></div>
+      <h3>紙は古代中国で大きく発展した</h3>
+      <p>記録媒体としての紙は古代中国で改良が進み、後に世界へ広まっていきました。</p>
+    </article><article class="card" data-category="歴史">
+      <div class="meta"><span class="badge">022</span><span class="cat">歴史</span></div>
+      <h3>印刷技術は知識の広まりを加速させた</h3>
+      <p>大量印刷が可能になることで、本や情報がより広い範囲に届くようになりました。</p>
+    </article><article class="card" data-category="歴史">
+      <div class="meta"><span class="badge">023</span><span class="cat">歴史</span></div>
+      <h3>エジプトのピラミッドは王墓として知られる</h3>
+      <p>古代エジプトの巨大建造物で、王や王家に関わる墓とされています。</p>
+    </article><article class="card" data-category="歴史">
+      <div class="meta"><span class="badge">024</span><span class="cat">歴史</span></div>
+      <h3>日本の江戸は世界有数の大都市だった</h3>
+      <p>江戸時代の江戸は人口が非常に多く、当時の世界でも大きな都市のひとつでした。</p>
+    </article><article class="card" data-category="歴史">
+      <div class="meta"><span class="badge">025</span><span class="cat">歴史</span></div>
+      <h3>シルクロードは1本の道ではない</h3>
+      <p>東西を結ぶ交易路の総称で、複数のルートが存在しました。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-6" class="category-section">
+      <div class="section-head">
+        <h2>言語</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="言語">
+      <div class="meta"><span class="badge">026</span><span class="cat">言語</span></div>
+      <h3>日本語の曜日名には天体由来のものがある</h3>
+      <p>月・火・水・木・金・土・日という呼び方には、古くからの天体や自然観が反映されています。</p>
+    </article><article class="card" data-category="言語">
+      <div class="meta"><span class="badge">027</span><span class="cat">言語</span></div>
+      <h3>世界には数千の言語がある</h3>
+      <p>細かな分類方法によりますが、世界には非常に多くの言語が話されています。</p>
+    </article><article class="card" data-category="言語">
+      <div class="meta"><span class="badge">028</span><span class="cat">言語</span></div>
+      <h3>同じ言葉でも地域で意味が変わる</h3>
+      <p>方言や地域差によって、同じ表現が別の意味で使われることがあります。</p>
+    </article><article class="card" data-category="言語">
+      <div class="meta"><span class="badge">029</span><span class="cat">言語</span></div>
+      <h3>アルファベットの大文字と小文字は成り立ちが異なる</h3>
+      <p>書体の歴史をさかのぼると、使われ方や形の由来に違いがあります。</p>
+    </article><article class="card" data-category="言語">
+      <div class="meta"><span class="badge">030</span><span class="cat">言語</span></div>
+      <h3>日本語にはオノマトペが豊富</h3>
+      <p>音や様子を表す言葉が多く、会話や文章に細かなニュアンスを与えます。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-7" class="category-section">
+      <div class="section-head">
+        <h2>人体</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="人体">
+      <div class="meta"><span class="badge">031</span><span class="cat">人体</span></div>
+      <h3>人の骨は成長で数が変わる</h3>
+      <p>赤ちゃんの骨は多く、成長とともにくっついて大人では数が少なくなります。</p>
+    </article><article class="card" data-category="人体">
+      <div class="meta"><span class="badge">032</span><span class="cat">人体</span></div>
+      <h3>皮膚は体の中でも大きな器官</h3>
+      <p>全身を覆い、外部から体を守る大切な役割を持っています。</p>
+    </article><article class="card" data-category="人体">
+      <div class="meta"><span class="badge">033</span><span class="cat">人体</span></div>
+      <h3>くしゃみは目を閉じやすい</h3>
+      <p>反射的な動きの一部として目が閉じることが多いですが、絶対ではありません。</p>
+    </article><article class="card" data-category="人体">
+      <div class="meta"><span class="badge">034</span><span class="cat">人体</span></div>
+      <h3>味は舌だけでなく鼻も関係する</h3>
+      <p>食べ物の“風味”は嗅覚の影響が大きく、鼻づまりだと味が分かりにくく感じます。</p>
+    </article><article class="card" data-category="人体">
+      <div class="meta"><span class="badge">035</span><span class="cat">人体</span></div>
+      <h3>人は寝ている間にも汗をかく</h3>
+      <p>体温調節のため、睡眠中にも少しずつ水分が失われています。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-8" class="category-section">
+      <div class="section-head">
+        <h2>地球</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="地球">
+      <div class="meta"><span class="badge">036</span><span class="cat">地球</span></div>
+      <h3>地球は完全な球体ではない</h3>
+      <p>自転の影響で赤道付近がややふくらんだ形をしています。</p>
+    </article><article class="card" data-category="地球">
+      <div class="meta"><span class="badge">037</span><span class="cat">地球</span></div>
+      <h3>砂漠にも雪が降ることがある</h3>
+      <p>乾燥地帯でも気温条件がそろえば雪が観測されることがあります。</p>
+    </article><article class="card" data-category="地球">
+      <div class="meta"><span class="badge">038</span><span class="cat">地球</span></div>
+      <h3>海のほうが昼夜の温度差が小さい</h3>
+      <p>水は温まりにくく冷めにくいため、陸地よりも気温変化がゆるやかです。</p>
+    </article><article class="card" data-category="地球">
+      <div class="meta"><span class="badge">039</span><span class="cat">地球</span></div>
+      <h3>山の上では水が低い温度で沸きやすい</h3>
+      <p>気圧が低い場所では沸点が下がるため、平地より早く沸騰します。</p>
+    </article><article class="card" data-category="地球">
+      <div class="meta"><span class="badge">040</span><span class="cat">地球</span></div>
+      <h3>南半球では季節が逆になる</h3>
+      <p>地球の傾きの影響で、北半球が夏のとき南半球は冬になります。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-9" class="category-section">
+      <div class="section-head">
+        <h2>文化</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="文化">
+      <div class="meta"><span class="badge">041</span><span class="cat">文化</span></div>
+      <h3>握手の起源には“武器を持っていない”示し方説がある</h3>
+      <p>右手を差し出す行為には、敵意がないことを示す意味があったとする説があります。</p>
+    </article><article class="card" data-category="文化">
+      <div class="meta"><span class="badge">042</span><span class="cat">文化</span></div>
+      <h3>箸の形は国や地域で少し違う</h3>
+      <p>長さや先端の形などに文化圏ごとの特徴が見られます。</p>
+    </article><article class="card" data-category="文化">
+      <div class="meta"><span class="badge">043</span><span class="cat">文化</span></div>
+      <h3>正月料理には願いが込められることが多い</h3>
+      <p>縁起を担いだ名前や形、由来を持つ料理が多くあります。</p>
+    </article><article class="card" data-category="文化">
+      <div class="meta"><span class="badge">044</span><span class="cat">文化</span></div>
+      <h3>色のイメージは文化で異なる</h3>
+      <p>同じ色でも、国や地域によって連想される意味が違うことがあります。</p>
+    </article><article class="card" data-category="文化">
+      <div class="meta"><span class="badge">045</span><span class="cat">文化</span></div>
+      <h3>拍手の仕方にも文化差がある</h3>
+      <p>長さや場面、タイミングなどに国ごとの慣習が現れます。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-10" class="category-section">
+      <div class="section-head">
+        <h2>生活</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="生活">
+      <div class="meta"><span class="badge">046</span><span class="cat">生活</span></div>
+      <h3>鉛筆の“HB”は硬さと黒さの目安</h3>
+      <p>Hは硬い、Bは黒いという意味で、その中間がHBです。</p>
+    </article><article class="card" data-category="生活">
+      <div class="meta"><span class="badge">047</span><span class="cat">生活</span></div>
+      <h3>鏡は左右ではなく前後を反転していると説明されることがある</h3>
+      <p>鏡像の感じ方は、左右を入れ替えたように見える認知のクセとも関係しています。</p>
+    </article><article class="card" data-category="生活">
+      <div class="meta"><span class="badge">048</span><span class="cat">生活</span></div>
+      <h3>濡れた布は風があると乾きやすい</h3>
+      <p>風が水分を運び去ることで蒸発が進みやすくなります。</p>
+    </article><article class="card" data-category="生活">
+      <div class="meta"><span class="badge">049</span><span class="cat">生活</span></div>
+      <h3>シャボン玉が虹色に見えるのは薄い膜の光の干渉</h3>
+      <p>膜の厚さの違いで反射する色が変わり、虹色に見えます。</p>
+    </article><article class="card" data-category="生活">
+      <div class="meta"><span class="badge">050</span><span class="cat">生活</span></div>
+      <h3>保温ボトルは真空の層で熱移動を抑える</h3>
+      <p>熱が伝わる道を減らすことで、温かさや冷たさを保ちやすくしています。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-11" class="category-section">
+      <div class="section-head">
+        <h2>テクノロジー</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="テクノロジー">
+      <div class="meta"><span class="badge">051</span><span class="cat">テクノロジー</span></div>
+      <h3>QRコードには誤り訂正の仕組みがある</h3>
+      <p>少しくらい欠けたり汚れたりしても読み取れるよう工夫されています。</p>
+    </article><article class="card" data-category="テクノロジー">
+      <div class="meta"><span class="badge">052</span><span class="cat">テクノロジー</span></div>
+      <h3>キーボード配列は打ちやすさだけで決まったわけではない</h3>
+      <p>歴史的な事情や機械的な都合が現在の配列に影響しました。</p>
+    </article><article class="card" data-category="テクノロジー">
+      <div class="meta"><span class="badge">053</span><span class="cat">テクノロジー</span></div>
+      <h3>スマホの画面はガラスでもかなり丈夫</h3>
+      <p>化学強化や構造の工夫により、日常利用に耐えるよう設計されています。</p>
+    </article><article class="card" data-category="テクノロジー">
+      <div class="meta"><span class="badge">054</span><span class="cat">テクノロジー</span></div>
+      <h3>Wi‑Fiという言葉は厳密には略語ではないとされる</h3>
+      <p>親しみやすいブランド名として広まった表現として扱われることがあります。</p>
+    </article><article class="card" data-category="テクノロジー">
+      <div class="meta"><span class="badge">055</span><span class="cat">テクノロジー</span></div>
+      <h3>デジタル画像は小さな点の集まり</h3>
+      <p>画面上の画像は多数のピクセルで構成され、色の組み合わせで絵を作っています。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-12" class="category-section">
+      <div class="section-head">
+        <h2>植物</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="植物">
+      <div class="meta"><span class="badge">056</span><span class="cat">植物</span></div>
+      <h3>ひまわりは成長期に太陽を追う</h3>
+      <p>若い時期には太陽の方向に合わせて向きを変えやすい性質があります。</p>
+    </article><article class="card" data-category="植物">
+      <div class="meta"><span class="badge">057</span><span class="cat">植物</span></div>
+      <h3>竹は木ではなくイネ科</h3>
+      <p>見た目は木のようでも、分類上は草の仲間に入ります。</p>
+    </article><article class="card" data-category="植物">
+      <div class="meta"><span class="badge">058</span><span class="cat">植物</span></div>
+      <h3>落ち葉が色づくのは葉の成分変化</h3>
+      <p>緑の色素が分解されると、別の色素が目立つようになります。</p>
+    </article><article class="card" data-category="植物">
+      <div class="meta"><span class="badge">059</span><span class="cat">植物</span></div>
+      <h3>サボテンのトゲは葉が変化したもの</h3>
+      <p>乾燥地で水分を守るために、葉がトゲのような形に変わったと考えられています。</p>
+    </article><article class="card" data-category="植物">
+      <div class="meta"><span class="badge">060</span><span class="cat">植物</span></div>
+      <h3>種は眠るように発芽を待つことがある</h3>
+      <p>条件がそろうまで発芽を遅らせることで、生き残りやすくする仕組みがあります。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-13" class="category-section">
+      <div class="section-head">
+        <h2>海</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="海">
+      <div class="meta"><span class="badge">061</span><span class="cat">海</span></div>
+      <h3>海の水がしょっぱいのは陸から運ばれる成分の影響</h3>
+      <p>長い時間をかけて川などが運んだ成分が海にたまり、塩分として残っています。</p>
+    </article><article class="card" data-category="海">
+      <div class="meta"><span class="badge">062</span><span class="cat">海</span></div>
+      <h3>潮の満ち引きには月の影響が大きい</h3>
+      <p>月の引力と地球の自転などが組み合わさって潮汐が起こります。</p>
+    </article><article class="card" data-category="海">
+      <div class="meta"><span class="badge">063</span><span class="cat">海</span></div>
+      <h3>深海はとても高圧</h3>
+      <p>水深が深くなるほど水の重みが増え、強い圧力がかかります。</p>
+    </article><article class="card" data-category="海">
+      <div class="meta"><span class="badge">064</span><span class="cat">海</span></div>
+      <h3>サンゴは植物ではなく動物</h3>
+      <p>見た目は岩や植物のようでも、小さな動物が集まって群体を作っています。</p>
+    </article><article class="card" data-category="海">
+      <div class="meta"><span class="badge">065</span><span class="cat">海</span></div>
+      <h3>波は水そのものが大移動するとは限らない</h3>
+      <p>波の形が進んで見えても、水の粒はその場で円を描くように動くことが多いです。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-14" class="category-section">
+      <div class="section-head">
+        <h2>音</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="音">
+      <div class="meta"><span class="badge">066</span><span class="cat">音</span></div>
+      <h3>コウモリは超音波を使う</h3>
+      <p>人には聞こえにくい高い音を出し、反射で周囲を把握します。</p>
+    </article><article class="card" data-category="音">
+      <div class="meta"><span class="badge">067</span><span class="cat">音</span></div>
+      <h3>真空中では普通の音は伝わらない</h3>
+      <p>音は空気や水などの媒質の振動で伝わるため、真空では伝わりません。</p>
+    </article><article class="card" data-category="音">
+      <div class="meta"><span class="badge">068</span><span class="cat">音</span></div>
+      <h3>同じ曲でも場所で響き方が変わる</h3>
+      <p>壁の材質や広さで反射の仕方が変わり、聞こえ方が異なります。</p>
+    </article><article class="card" data-category="音">
+      <div class="meta"><span class="badge">069</span><span class="cat">音</span></div>
+      <h3>救急車のサイレンが近づくと高く聞こえる</h3>
+      <p>音源が近づくと周波数が高く感じられるドップラー効果の例です。</p>
+    </article><article class="card" data-category="音">
+      <div class="meta"><span class="badge">070</span><span class="cat">音</span></div>
+      <h3>イヤホンの音漏れは低音より高音が目立ちやすいことがある</h3>
+      <p>周囲の環境や装着状態によって、高い音が外に漏れて聞こえやすくなる場合があります。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-15" class="category-section">
+      <div class="section-head">
+        <h2>数学</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="数学">
+      <div class="meta"><span class="badge">071</span><span class="cat">数学</span></div>
+      <h3>0で割る計算はできない</h3>
+      <p>割り算のルールと矛盾してしまうため、通常の算術では定義されません。</p>
+    </article><article class="card" data-category="数学">
+      <div class="meta"><span class="badge">072</span><span class="cat">数学</span></div>
+      <h3>円周率は終わりのない小数</h3>
+      <p>πは循環せずに続く無理数として知られています。</p>
+    </article><article class="card" data-category="数学">
+      <div class="meta"><span class="badge">073</span><span class="cat">数学</span></div>
+      <h3>三角形の内角の和は平面では180度</h3>
+      <p>学校で学ぶ平面幾何では基本的な性質のひとつです。</p>
+    </article><article class="card" data-category="数学">
+      <div class="meta"><span class="badge">074</span><span class="cat">数学</span></div>
+      <h3>偶数と偶数を足すと偶数</h3>
+      <p>2の倍数同士を足しても、やはり2の倍数になるためです。</p>
+    </article><article class="card" data-category="数学">
+      <div class="meta"><span class="badge">075</span><span class="cat">数学</span></div>
+      <h3>百分率は“100あたり”を表す</h3>
+      <p>50%は100のうち50という意味で、割合を直感的に示せます。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-16" class="category-section">
+      <div class="section-head">
+        <h2>天気</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="天気">
+      <div class="meta"><span class="badge">076</span><span class="cat">天気</span></div>
+      <h3>雲にも重さがある</h3>
+      <p>小さな水滴や氷の粒が大量に集まっているため、全体としてはかなりの質量になります。</p>
+    </article><article class="card" data-category="天気">
+      <div class="meta"><span class="badge">077</span><span class="cat">天気</span></div>
+      <h3>朝焼けと夕焼けが赤いのは光の散乱</h3>
+      <p>太陽光が長い距離を通ると青い光が散りやすく、赤い光が目立ちます。</p>
+    </article><article class="card" data-category="天気">
+      <div class="meta"><span class="badge">078</span><span class="cat">天気</span></div>
+      <h3>雪の結晶は六角形が基本</h3>
+      <p>水分子の結びつき方の特徴が、六角形の対称性に表れます。</p>
+    </article><article class="card" data-category="天気">
+      <div class="meta"><span class="badge">079</span><span class="cat">天気</span></div>
+      <h3>霧は地面近くの雲</h3>
+      <p>空気中の水蒸気が細かな水滴になり、地表付近に浮かぶ現象です。</p>
+    </article><article class="card" data-category="天気">
+      <div class="meta"><span class="badge">080</span><span class="cat">天気</span></div>
+      <h3>台風は暖かい海で勢力を得やすい</h3>
+      <p>海面からの熱や水蒸気がエネルギー源になるためです。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-17" class="category-section">
+      <div class="section-head">
+        <h2>芸術</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="芸術">
+      <div class="meta"><span class="badge">081</span><span class="cat">芸術</span></div>
+      <h3>油絵と水彩は乾き方がかなり違う</h3>
+      <p>使う材料が異なるため、重ね塗りのしやすさや質感も変わります。</p>
+    </article><article class="card" data-category="芸術">
+      <div class="meta"><span class="badge">082</span><span class="cat">芸術</span></div>
+      <h3>モノクロ写真でも多くの情報が伝わる</h3>
+      <p>色がなくても光と影、構図、質感によって強い印象を作れます。</p>
+    </article><article class="card" data-category="芸術">
+      <div class="meta"><span class="badge">083</span><span class="cat">芸術</span></div>
+      <h3>映画は静止画の連続で動いて見える</h3>
+      <p>連続したコマを素早く見せることで、動いているように感じます。</p>
+    </article><article class="card" data-category="芸術">
+      <div class="meta"><span class="badge">084</span><span class="cat">芸術</span></div>
+      <h3>遠近法は“奥行き”を平面に描く工夫</h3>
+      <p>線を一点に集めるなどして、紙の上に立体感を生み出します。</p>
+    </article><article class="card" data-category="芸術">
+      <div class="meta"><span class="badge">085</span><span class="cat">芸術</span></div>
+      <h3>余白はデザインの大切な要素</h3>
+      <p>何も置かない空間があることで、情報が整理され見やすくなります。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-18" class="category-section">
+      <div class="section-head">
+        <h2>乗り物</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="乗り物">
+      <div class="meta"><span class="badge">086</span><span class="cat">乗り物</span></div>
+      <h3>自転車は止まっていると倒れやすい</h3>
+      <p>走行中はバランスをとるための操作がしやすく、安定しやすくなります。</p>
+    </article><article class="card" data-category="乗り物">
+      <div class="meta"><span class="badge">087</span><span class="cat">乗り物</span></div>
+      <h3>飛行機の翼は揚力を生む形をしている</h3>
+      <p>空気の流れと角度を利用して上向きの力を得ます。</p>
+    </article><article class="card" data-category="乗り物">
+      <div class="meta"><span class="badge">088</span><span class="cat">乗り物</span></div>
+      <h3>電車のレールにはわずかなすき間が必要</h3>
+      <p>温度変化による伸び縮みを吸収するための工夫です。</p>
+    </article><article class="card" data-category="乗り物">
+      <div class="meta"><span class="badge">089</span><span class="cat">乗り物</span></div>
+      <h3>船は重くても浮ける</h3>
+      <p>押しのけた水の重さとつり合うだけの浮力を受ければ浮かびます。</p>
+    </article><article class="card" data-category="乗り物">
+      <div class="meta"><span class="badge">090</span><span class="cat">乗り物</span></div>
+      <h3>車のタイヤの溝は排水に役立つ</h3>
+      <p>濡れた路面で水を逃がし、接地性を保つための重要な要素です。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-19" class="category-section">
+      <div class="section-head">
+        <h2>スポーツ</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="スポーツ">
+      <div class="meta"><span class="badge">091</span><span class="cat">スポーツ</span></div>
+      <h3>マラソンは古代ギリシャの故事に由来すると語られる</h3>
+      <p>競技名の由来として広く知られるエピソードがあります。</p>
+    </article><article class="card" data-category="スポーツ">
+      <div class="meta"><span class="badge">092</span><span class="cat">スポーツ</span></div>
+      <h3>野球のボールには縫い目がある</h3>
+      <p>縫い目は握りやすさだけでなく、投球時の変化にも関わります。</p>
+    </article><article class="card" data-category="スポーツ">
+      <div class="meta"><span class="badge">093</span><span class="cat">スポーツ</span></div>
+      <h3>卓球の球はとても軽い</h3>
+      <p>わずかな回転や空気抵抗の影響を受けやすく、繊細な競技です。</p>
+    </article><article class="card" data-category="スポーツ">
+      <div class="meta"><span class="badge">094</span><span class="cat">スポーツ</span></div>
+      <h3>サッカーの試合時間は止まらず進む</h3>
+      <p>そのため主審が失われた時間を考慮して追加時間を設けます。</p>
+    </article><article class="card" data-category="スポーツ">
+      <div class="meta"><span class="badge">095</span><span class="cat">スポーツ</span></div>
+      <h3>水泳では水の抵抗を減らす工夫が大事</h3>
+      <p>姿勢やフォームの少しの違いがタイムに大きく影響します。</p>
+    </article>
+      </div>
+    </section>
+    
+    <section id="sec-20" class="category-section">
+      <div class="section-head">
+        <h2>雑学</h2>
+        <a href="#top">↑ 上へ</a>
+      </div>
+      <div class="grid">
+        <article class="card" data-category="雑学">
+      <div class="meta"><span class="badge">096</span><span class="cat">雑学</span></div>
+      <h3>ペンギンは鳥だが飛ぶ代わりに泳ぎが得意</h3>
+      <p>翼を水中で使うことで、海の中を素早く移動できます。</p>
+    </article><article class="card" data-category="雑学">
+      <div class="meta"><span class="badge">097</span><span class="cat">雑学</span></div>
+      <h3>レモンが特別にビタミンC最多とは限らない</h3>
+      <p>果物によって含有量はさまざまで、イメージと実際が違うことがあります。</p>
+    </article><article class="card" data-category="雑学">
+      <div class="meta"><span class="badge">098</span><span class="cat">雑学</span></div>
+      <h3>ネジの多くは右回しで締まる</h3>
+      <p>標準的な規格では右ねじが多く、時計回りで締まるものが一般的です。</p>
+    </article><article class="card" data-category="雑学">
+      <div class="meta"><span class="badge">099</span><span class="cat">雑学</span></div>
+      <h3>カレンダーの1週間は7日</h3>
+      <p>古代からの天体観や宗教・文化の影響を受け、この周期が広く定着しました。</p>
+    </article><article class="card" data-category="雑学">
+      <div class="meta"><span class="badge">100</span><span class="cat">雑学</span></div>
+      <h3>“SOS”はモールス信号で覚えやすい</h3>
+      <p>点3つ・線3つ・点3つという対称的な並びで、緊急信号として広く知られています。</p>
+    </article>
+      </div>
+    </section>
+    
+  </main>
+
+  <footer class="footer wrap">
+    <p>100個ちょうどの豆知識を掲載したシングルページサイトです。気になる話題を検索して、雑談や学びのきっかけにどうぞ。</p>
+  </footer>
+
+  <script>
+    const buttons = [...document.querySelectorAll('.filter-btn')];
+    const searchBox = document.getElementById('searchBox');
+    let activeFilter = 'all';
+
+    function applyFilter() {
+      const keyword = searchBox.value.trim().toLowerCase();
+      const sections = document.querySelectorAll('.category-section');
+      sections.forEach(section => {
+        let visibleCount = 0;
+        section.querySelectorAll('.card').forEach(card => {
+          const category = card.dataset.category;
+          const text = card.innerText.toLowerCase();
+          const matchCategory = activeFilter === 'all' || activeFilter === category;
+          const matchKeyword = !keyword || text.includes(keyword);
+          const show = matchCategory && matchKeyword;
+          card.classList.toggle('hide', !show);
+          if (show) visibleCount++;
+        });
+        section.classList.toggle('hide', visibleCount === 0);
+      });
+    }
+
+    buttons.forEach(btn => btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilter();
+    }));
+    searchBox.addEventListener('input', applyFilter);
+  </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
